@@ -47,7 +47,7 @@ func NewSendMsgBodyFunc(c *QYWXClient, typ SMType) SendMsgBodyFunc {
 	switch typ {
 	case TextType:
 		return func(ctx context.Context, msg *BaseMsg) ([]byte, error) {
-			body := msg.MsgBody.(SendMessageTextType)
+			body := msg.MsgBody.(*SendMessageTextType)
 			body.SendMessageBaseType = SendMessageBaseType{
 				ToUser:                 strings.Join(c.GetToUserList(ctx), "|"),
 				MsgType:                "text",
@@ -60,7 +60,7 @@ func NewSendMsgBodyFunc(c *QYWXClient, typ SMType) SendMsgBodyFunc {
 		}
 	case CardType:
 		return func(ctx context.Context, msg *BaseMsg) ([]byte, error) {
-			body := msg.MsgBody.(SendMessageTemplateCardType)
+			body := msg.MsgBody.(*SendMessageTemplateCardType)
 			body.SendMessageBaseType = SendMessageBaseType{
 				ToUser:                 strings.Join(c.GetToUserList(ctx), "|"),
 				MsgType:                "template_card",
@@ -212,6 +212,9 @@ func (c *QYWXClient) CallbackResp(ctx context.Context, typ CBType, req *Callback
 	showinfo, err := cb(ctx, typ, m)
 	if err != nil {
 		return nil, err
+	}
+	if showinfo == nil {
+		showinfo = []byte("")
 	}
 	toUser := strings.Join(c.GetToUserList(ctx), "|")
 	fromUser := c.base.GetCorpID()

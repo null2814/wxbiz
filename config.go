@@ -27,14 +27,14 @@ func (b *BaseInfo) SetBaseInfo(new *BaseInfo) {
 
 func (b *BaseInfo) GetAgentId() int32 {
 	b.l.RLock()
-	defer b.l.Unlock()
+	defer b.l.RUnlock()
 	id := b.AgentId
 	return id
 }
 
 func (b *BaseInfo) GetCorpID() string {
 	b.l.RLock()
-	defer b.l.Unlock()
+	defer b.l.RUnlock()
 	id := b.CorpId
 	return id
 }
